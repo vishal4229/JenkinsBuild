@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "447675973271",
+    "project_id": "mfteambuild",
+    "storage_bucket": "mfteambuild.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447675973271:android:1db9a71ab1b091f78d73d2",
+        "android_client_info": {
+          "package_name": "com.example.mf_team_build"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447675973271-24ravkc86tspm7n7rdreqv9ap6fb0nph.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDblxL4w7WEpBzsKlGITcyG7TqLJEYKUEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "447675973271-24ravkc86tspm7n7rdreqv9ap6fb0nph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
