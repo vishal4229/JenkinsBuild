@@ -110,30 +110,27 @@ class _TrackingPageState extends State<TrackingPage> {
         alreadyExecuted1 = true;
         Navigator.of(context).pop();
       }
-      if (!mounted) return;
-      setState(() {
-        mfapplication = responseJson['mfapplication'];
-        mfadmin = responseJson['mfadmin'];
-        mfcronicle = responseJson['mfcronicle'];
-        mfconsumer = responseJson['mfconsumer'];
-        buildData(
-            "MF-Application",
-            mfapplicationData,
-            mfapplicationData2,
-            mfapplication,
-            progressValuemfapplicationData,
-            progressValuemfapplicationData2,
-            cnt);
-        buildData("MF-Admin", mfadminData, mfadminData2, mfadmin,
-            progressValuemfadminData, progressValuemfadminData2, cnt);
-        buildData("MF-Cronicle", mfcronicleData, mfcronicleData2, mfcronicle,
-            progressValuemfcronicleData, progressValuemfcronicleData2, cnt);
-        buildData("MF-Consumer", mfconsumerData, mfconsumerData2, mfconsumer,
-            progressValuemfconsumerData, progressValuemfconsumerData2, cnt);
-        if (!alreadyExecuted) {
-          alreadyExecuted = true;
-        }
-      });
+      mfapplication = responseJson['mfapplication'];
+      mfadmin = responseJson['mfadmin'];
+      mfcronicle = responseJson['mfcronicle'];
+      mfconsumer = responseJson['mfconsumer'];
+      buildData(
+          "MF-Application",
+          mfapplicationData,
+          mfapplicationData2,
+          mfapplication,
+          progressValuemfapplicationData,
+          progressValuemfapplicationData2,
+          cnt);
+      buildData("MF-Admin", mfadminData, mfadminData2, mfadmin,
+          progressValuemfadminData, progressValuemfadminData2, cnt);
+      buildData("MF-Cronicle", mfcronicleData, mfcronicleData2, mfcronicle,
+          progressValuemfcronicleData, progressValuemfcronicleData2, cnt);
+      buildData("MF-Consumer", mfconsumerData, mfconsumerData2, mfconsumer,
+          progressValuemfconsumerData, progressValuemfconsumerData2, cnt);
+      if (!alreadyExecuted) {
+        alreadyExecuted = true;
+      }
     } else if (!alreadyExecuted) {
       // ignore: use_build_context_synchronously
       errordialogbox(okButton(context));
