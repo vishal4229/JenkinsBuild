@@ -11,8 +11,9 @@ final headers = {
   'Content-Type': 'application/json',
   "Access-Control-Allow-Origin": "*"
 };
+final encoding = Encoding.getByName('utf-8');
 
-Future<Response> postCall(Uri uri, String jsonBody, Encoding? encoding) async {
+Future<Response> postCall(Uri uri, String jsonBody) async {
   Response response =
       await post(uri, headers: headers, body: jsonBody, encoding: encoding);
   return response;
@@ -22,9 +23,7 @@ Future<int> loginRequest(String username, String pass) async {
   final uri = Uri.parse('${server_url}creds/login/');
   Map<String, dynamic> body = {'username': username, 'password': pass};
   String jsonBody = json.encode(body);
-  final encoding = Encoding.getByName('utf-8');
-
-  Response response = await postCall(uri, jsonBody, encoding);
+  Response response = await postCall(uri, jsonBody);
 
   int statusCode = response.statusCode;
   String responseBody = response.body;
@@ -57,8 +56,7 @@ Future<int> signupRequest(String username, String pass, String jenkinsUsername,
     'build_token': buildToken
   };
   String jsonBody = json.encode(body);
-  final encoding = Encoding.getByName('utf-8');
-  Response response = await postCall(uri, jsonBody, encoding);
+  Response response = await postCall(uri, jsonBody);
   int statusCode = response.statusCode;
   return statusCode;
 }
@@ -76,9 +74,8 @@ Future<dynamic> startBuildRequest(dataList) async {
     'build_data': dataList.toString(),
   };
   String jsonBody = json.encode(body);
-  final encoding = Encoding.getByName('utf-8');
 
-  Response response = await postCall(uri, jsonBody, encoding);
+  Response response = await postCall(uri, jsonBody);
 
   statusCode = response.statusCode;
   String responseBody = response.body;
@@ -99,8 +96,7 @@ Future<dynamic> buildDataRequest() async {
     'username': jenkins_username,
   };
   String jsonBody = json.encode(body);
-  final encoding = Encoding.getByName('utf-8');
-  Response response = await postCall(uri, jsonBody, encoding);
+  Response response = await postCall(uri, jsonBody);
   if (response.statusCode == 200) {
     b = jsonDecode(response.body);
   }
@@ -127,6 +123,5 @@ Future<dynamic> saveToken(token) async {
   final username = prefs.getString('username') ?? '';
   Map<String, dynamic> body = {'username': username, 'token': token};
   String jsonBody = json.encode(body);
-  final encoding = Encoding.getByName('utf-8');
-  await postCall(uri, jsonBody, encoding);
+  await postCall(uri, jsonBody);
 }

@@ -208,12 +208,6 @@ class _TrackingPageState extends State<TrackingPage> {
     });
   }
 
-  @override
-  void dispose() {
-    t2.cancel();
-    super.dispose();
-  }
-
   Widget _card1(
       String server, String jobName, String author, String time, progress) {
     return Card(
@@ -334,5 +328,11 @@ class _TrackingPageState extends State<TrackingPage> {
         child: const Icon(Icons.refresh),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    t2.cancel();
+    super.dispose();
   }
 }
