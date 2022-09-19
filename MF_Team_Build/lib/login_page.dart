@@ -1,16 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:mf_team_build/profilePage.dart';
+import 'package:mf_team_build/commonwidget.dart';
 import 'package:mf_team_build/signup.dart';
-import 'package:mf_team_build/trackingPage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'SuccessPage.dart';
 import 'connectserver.dart';
 
-class loginStatels extends StatelessWidget {
-  loginStatels({Key? key}) : super(key: key);
+class LoginStateLs extends StatelessWidget {
+  const LoginStateLs({Key? key}) : super(key: key);
   static const String _title = 'MFTeam';
   @override
   Widget build(BuildContext context) {
@@ -42,12 +39,12 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: <Widget>[
-            Padding(padding: const EdgeInsets.fromLTRB(0, 80, 0, 0)),
+            const Padding(padding: EdgeInsets.fromLTRB(0, 80, 0, 0)),
             CircleAvatar(
               radius: 35.0,
               child: ClipRRect(
-                child: Image.asset('web/icons/jenkins.png'),
                 borderRadius: BorderRadius.circular(50.0),
+                child: Image.asset('web/icons/jenkins.png'),
               ),
             ),
             Container(
@@ -57,27 +54,8 @@ class _LoginPageState extends State<LoginPage> {
                   'Sign in',
                   style: TextStyle(fontSize: 20),
                 )),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'User Name',
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: TextField(
-                obscureText: true,
-                controller: passwordController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                ),
-              ),
-            ),
+            formContainer(nameController, 'User Name'),
+            formPassContainer(passwordController, 'Password'),
             TextButton(
               onPressed: () {
                 //forgot password screen
@@ -93,55 +71,17 @@ class _LoginPageState extends State<LoginPage> {
                   child: const Text('Login'),
                   onPressed: () async {
                     int statusCode;
-                    print(passwordController.text);
-                    statusCode = await makePostRequest1(
+                    statusCode = await loginRequest(
                         nameController.text, passwordController.text);
-                    // makePostRequest().then((statusCode) {
-                    //   print(statusCode);
-                    // });
                     if (statusCode == 200) {
-                      // ignore: use_build_context_synchronously
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          content: Container(
-                            padding: const EdgeInsets.all(8),
-                            height: 50,
-                            decoration: const BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                'Login Success',
-                              ),
-                            ),
-                          )));
-                      // ignore: use_build_context_synchronously
+                      snackbar(context, 'Login Success', Colors.green);
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const SucessPage()),
                       );
                     } else {
-                      print("Login Failed");
-                      // ignore: use_build_context_synchronously
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          content: Container(
-                            padding: const EdgeInsets.all(8),
-                            height: 40,
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                'Login Failed',
-                              ),
-                            ),
-                          )));
+                      snackbar(context, 'Login Failed', Colors.red);
                     }
                   },
                 )),

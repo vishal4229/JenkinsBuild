@@ -1,9 +1,10 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:mf_team_build/commonwidget.dart';
 import 'package:mf_team_build/profilePage.dart';
-import 'package:mf_team_build/trackingPage.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:mf_team_build/trackingPage.dart';
 
 import 'connectserver.dart';
 
@@ -25,22 +26,6 @@ class _SucessPageState extends State<SucessPage> {
   Map<dynamic, dynamic> b = {};
 
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Track',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: Profile',
-      style: optionStyle,
-    ),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -50,19 +35,19 @@ class _SucessPageState extends State<SucessPage> {
       case 0:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => SucessPage()),
+          MaterialPageRoute(builder: (context) => const SucessPage()),
         );
         break;
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => trackingPage()),
+          MaterialPageRoute(builder: (context) => const TrackingPage()),
         );
         break;
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => profilePage()),
+          MaterialPageRoute(builder: (context) => const profilePage()),
         );
         break;
     }
@@ -103,7 +88,7 @@ class _SucessPageState extends State<SucessPage> {
         v += 'MF-consumer ';
       }
     }
-    return d + '\n\n' + v;
+    return '$d\n\n$v';
   }
 
   @override
@@ -115,15 +100,15 @@ class _SucessPageState extends State<SucessPage> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             centerTitle: true),
         body: Container(
-          padding: new EdgeInsets.all(22.0),
+          padding: const EdgeInsets.all(22.0),
           child: Column(
             children: <Widget>[
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               SizedBox(
-                child: Column(children: [
-                  const Text(
+                child: Column(children: const [
+                  Text(
                     'Checkbox For Required Build',
                     style: TextStyle(
                         fontSize: 20.0,
@@ -144,7 +129,7 @@ class _SucessPageState extends State<SucessPage> {
                   ),
                   color: Colors.deepPurpleAccent,
                   child: Column(children: [
-                    Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 0)),
+                    const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 0)),
                     const Text(
                       'Select Server',
                       style: TextStyle(
@@ -156,7 +141,7 @@ class _SucessPageState extends State<SucessPage> {
                       children: <Widget>[
                         const Padding(
                             padding: EdgeInsets.fromLTRB(90, 10, 10, 40)),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         const Text('QA',
@@ -253,7 +238,7 @@ class _SucessPageState extends State<SucessPage> {
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
-                      subtitle: Text('Application Build',
+                      subtitle: const Text('Application Build',
                           style: TextStyle(
                               color: Color.fromARGB(255, 191, 189, 189))),
                       value: valuefirst,
@@ -278,7 +263,7 @@ class _SucessPageState extends State<SucessPage> {
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
-                      subtitle: Text('Cronicle Build',
+                      subtitle: const Text('Cronicle Build',
                           style: TextStyle(
                               color: Color.fromARGB(255, 191, 189, 189))),
                       value: valuesecond,
@@ -303,7 +288,7 @@ class _SucessPageState extends State<SucessPage> {
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
-                      subtitle: Text('Admin Build',
+                      subtitle: const Text('Admin Build',
                           style: TextStyle(
                               color: Color.fromARGB(255, 191, 189, 189))),
                       value: valuethird,
@@ -328,7 +313,7 @@ class _SucessPageState extends State<SucessPage> {
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
-                      subtitle: Text('Consumer Build',
+                      subtitle: const Text('Consumer Build',
                           style: TextStyle(
                               color: Color.fromARGB(255, 191, 189, 189))),
                       value: valuefourth,
@@ -353,30 +338,8 @@ class _SucessPageState extends State<SucessPage> {
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold)),
                     onPressed: () async {
-                      Widget okButton = TextButton(
-                        child: Text("OK"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      );
-                      showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return WillPopScope(
-                                onWillPop: () async {
-                                  return b['statusCode'] == 200 ||
-                                      b['statusCode'] == 400;
-                                },
-                                child: Center(
-                                    child: LoadingAnimationWidget
-                                        .staggeredDotsWave(
-                                            color: Color.fromARGB(
-                                                255, 1, 200, 255),
-                                            size: 70)));
-                          });
-
-                      b = await makePostRequest3([
+                      createloadingwidget(b, context);
+                      b = await startBuildRequest([
                         valueall,
                         valuefirst,
                         valuesecond,
@@ -387,36 +350,12 @@ class _SucessPageState extends State<SucessPage> {
                       ]);
                       if (b['statusCode'] == 200) {
                         Navigator.of(context).pop();
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                                  title: Text('Current Build Status',
-                                      style: TextStyle(color: Colors.red)),
-                                  content: Text(
-                                    createbuildData(b),
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  actions: [
-                                    okButton,
-                                  ],
-                                ));
+                        dailogbox(context, 'Current Build Status',
+                            createbuildData(b), Colors.green);
                       } else {
                         Navigator.of(context).pop();
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                                  title: const Text('Error'),
-                                  content: const Text(
-                                      'Error getting data from server',
-                                      style: TextStyle(
-                                          color: Colors.red,
-                                          fontWeight: FontWeight.bold)),
-                                  actions: [
-                                    okButton,
-                                  ],
-                                ));
+                        dailogbox(context, 'Error',
+                            'Error getting data from server', Colors.red);
                       }
                     },
                   )),

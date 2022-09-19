@@ -6,22 +6,25 @@ import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String server_url = "";
-Future<int> makePostRequest1(String username, String pass) async {
+
+final headers = {
+  'Content-Type': 'application/json',
+  "Access-Control-Allow-Origin": "*"
+};
+
+Future<Response> postCall(Uri uri, String jsonBody, Encoding? encoding) async {
+  Response response =
+      await post(uri, headers: headers, body: jsonBody, encoding: encoding);
+  return response;
+}
+
+Future<int> loginRequest(String username, String pass) async {
   final uri = Uri.parse('${server_url}creds/login/');
-  final headers = {
-    'Content-Type': 'application/json',
-    "Access-Control-Allow-Origin": "*"
-  };
   Map<String, dynamic> body = {'username': username, 'password': pass};
   String jsonBody = json.encode(body);
   final encoding = Encoding.getByName('utf-8');
 
-  Response response = await post(
-    uri,
-    headers: headers,
-    body: jsonBody,
-    encoding: encoding,
-  );
+  Response response = await postCall(uri, jsonBody, encoding);
 
   int statusCode = response.statusCode;
   String responseBody = response.body;
@@ -44,13 +47,9 @@ Future<int> makePostRequest1(String username, String pass) async {
   return statusCode;
 }
 
-Future<int> makePostRequest(String username, String pass,
-    String jenkinsUsername, String buildToken) async {
+Future<int> signupRequest(String username, String pass, String jenkinsUsername,
+    String buildToken) async {
   final uri = Uri.parse('${server_url}creds/create_user/');
-  final headers = {
-    'Content-Type': 'application/json',
-    "Access-Control-Allow-Origin": "*"
-  };
   Map<String, dynamic> body = {
     'username': username,
     'password': pass,
@@ -59,31 +58,18 @@ Future<int> makePostRequest(String username, String pass,
   };
   String jsonBody = json.encode(body);
   final encoding = Encoding.getByName('utf-8');
-
-  Response response = await post(
-    uri,
-    headers: headers,
-    body: jsonBody,
-    encoding: encoding,
-  );
-
+  Response response = await postCall(uri, jsonBody, encoding);
   int statusCode = response.statusCode;
-  String responseBody = response.body;
   return statusCode;
 }
 
-Future<dynamic> makePostRequest3(dataList) async {
+Future<dynamic> startBuildRequest(dataList) async {
   final uri = Uri.parse('${server_url}creds/start_build/');
-  final headers = {
-    'Content-Type': 'application/json',
-    "Access-Control-Allow-Origin": "*"
-  };
   Map<dynamic, dynamic> b = {};
   int statusCode = 0;
   final prefs = await SharedPreferences.getInstance();
   final jenkins_username = prefs.getString('jenkins_username') ?? '';
   final build_token = prefs.getString('build_token') ?? '';
-  // if (jenkins_username != '' && build_token != '') {
   Map<String, dynamic> body = {
     'username': jenkins_username,
     'build_token': build_token,
@@ -92,53 +78,31 @@ Future<dynamic> makePostRequest3(dataList) async {
   String jsonBody = json.encode(body);
   final encoding = Encoding.getByName('utf-8');
 
-  Response response = await post(
-    uri,
-    headers: headers,
-    body: jsonBody,
-    encoding: encoding,
-  );
+  Response response = await postCall(uri, jsonBody, encoding);
 
   statusCode = response.statusCode;
   String responseBody = response.body;
   // }
   if (statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    b = jsonDecode(response.body);
-    print(b);
+    b = jsonDecode(responseBody);
   }
   b['statusCode'] = response.statusCode;
   return b;
 }
 
-Future<dynamic> makegetRequest() async {
+Future<dynamic> buildDataRequest() async {
   final uri = Uri.parse('${server_url}creds/build_info/');
   Map<dynamic, dynamic> b = {};
-  final headers = {
-    'Content-Type': 'application/json',
-    "Access-Control-Allow-Origin": "*"
-  };
   final prefs = await SharedPreferences.getInstance();
   final jenkins_username = prefs.getString('jenkins_username') ?? '';
-  final build_token = prefs.getString('build_token') ?? '';
-  // if (jenkins_username != '' && build_token != '') {
   Map<String, dynamic> body = {
     'username': jenkins_username,
   };
   String jsonBody = json.encode(body);
   final encoding = Encoding.getByName('utf-8');
-  Response response = await post(
-    uri,
-    headers: headers,
-    body: jsonBody,
-    encoding: encoding,
-  );
+  Response response = await postCall(uri, jsonBody, encoding);
   if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
     b = jsonDecode(response.body);
-    print(b);
   }
   b['statusCode'] = response.statusCode;
   return b;
@@ -147,40 +111,22 @@ Future<dynamic> makegetRequest() async {
 Future<dynamic> getserverUrl() async {
   final uri = Uri.parse('https://api.npoint.io/c330164656dc623928a5');
   Map<dynamic, dynamic> b = {};
-  List<String> l1 = [];
   Response response = await get(uri);
-  // l1 = response.body;
 
   if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
     b = jsonDecode(response.body.replaceAll('[', "").replaceAll(']', ""));
-    // print(b['server_url']);
   }
   server_url = b['server_url'];
   final firebaseMessaging = FirebaseMessaging.instance;
-    final token =
-        firebaseMessaging.getToken().then((value) => saveToken(value));
+  firebaseMessaging.getToken().then((value) => saveToken(value));
 }
 
 Future<dynamic> saveToken(token) async {
-  print('${server_url}creds/create_token/');
   final uri = Uri.parse('${server_url}creds/create_token/');
-  Map<dynamic, dynamic> b = {};
-  final headers = {
-    'Content-Type': 'application/json',
-    "Access-Control-Allow-Origin": "*"
-  };
   final prefs = await SharedPreferences.getInstance();
   final username = prefs.getString('username') ?? '';
-  // if (jenkins_username != '' && build_token != '') {
   Map<String, dynamic> body = {'username': username, 'token': token};
   String jsonBody = json.encode(body);
   final encoding = Encoding.getByName('utf-8');
-  Response response = await post(
-    uri,
-    headers: headers,
-    body: jsonBody,
-    encoding: encoding,
-  );
+  await postCall(uri, jsonBody, encoding);
 }

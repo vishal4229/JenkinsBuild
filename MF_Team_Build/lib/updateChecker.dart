@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_autoupdate/flutter_autoupdate.dart';
 import 'package:mf_team_build/login_page.dart';
@@ -21,15 +20,15 @@ PackageInfo _packageInfo = PackageInfo(
   buildSignature: 'Unknown',
 );
 
-class updateChecker extends StatefulWidget {
-  const updateChecker({Key? key}) : super(key: key);
+class UpdateChecker extends StatefulWidget {
+  const UpdateChecker({Key? key}) : super(key: key);
 
   @override
-  State<updateChecker> createState() => _updateCheckerState();
+  State<UpdateChecker> createState() => UpdateCheckerState();
 }
 
-class _updateCheckerState extends State<updateChecker> {
-  String json_server_url = "https://api.npoint.io/c330164656dc623928a5";
+class UpdateCheckerState extends State<UpdateChecker> {
+  String jsonServerUrl = "https://api.npoint.io/c330164656dc623928a5";
   UpdateResult? _result;
   DownloadProgress? _download;
   var _startTime = DateTime.now().millisecondsSinceEpoch;
@@ -37,10 +36,8 @@ class _updateCheckerState extends State<updateChecker> {
 
   @override
   void initState() {
-    // WidgetsFlutterBinding.ensureInitialized();
     getserverUrl();
     _initPackageInfo();
-    // checkCachelogin();
     initPlatformState();
     super.initState();
   }
@@ -51,7 +48,7 @@ class _updateCheckerState extends State<updateChecker> {
     if (username != '') {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => SucessPage()),
+        MaterialPageRoute(builder: (context) => const SucessPage()),
       );
     }
   }
@@ -72,16 +69,14 @@ class _updateCheckerState extends State<updateChecker> {
 
     UpdateResult? result;
     if (!mounted) return;
-    var versionUrl;
-    versionUrl = json_server_url;
+    String versionUrl;
+    versionUrl = jsonServerUrl;
     var manager = UpdateManager(versionUrl: versionUrl);
     try {
       result = await manager.fetchUpdates();
       setState(() {
         _result = result;
       });
-      print(_packageInfo.version);
-      print(result?.latestVersion);
       if (Version.parse(_packageInfo.version) < result?.latestVersion) {
         setState(() {
           update1 = 'Downloading Update...';
@@ -96,7 +91,6 @@ class _updateCheckerState extends State<updateChecker> {
             _download = event;
           });
           if (event.completed) {
-            print("Downloaded completed");
             setState(() {
               update1 = 'Downloading completed"';
             });
@@ -108,7 +102,7 @@ class _updateCheckerState extends State<updateChecker> {
         checkCachelogin();
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => loginStatels()),
+          MaterialPageRoute(builder: (context) => const LoginStateLs()),
         );
       }
     } on Exception catch (e) {

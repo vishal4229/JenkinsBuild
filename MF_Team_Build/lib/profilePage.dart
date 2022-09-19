@@ -71,19 +71,19 @@ class _profilePageState extends State<profilePage> {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (BuildContext context) => loginStatels(),
+                            builder: (BuildContext context) => LoginStateLs(),
                           ),
                           (route) => false,
                         );
                       },
                       elevation: 10.0,
                       fillColor: Colors.green,
+                      padding: EdgeInsets.all(2.0),
+                      shape: CircleBorder(),
                       child: Icon(
                         Icons.logout,
                         size: 25.0,
                       ),
-                      padding: EdgeInsets.all(2.0),
-                      shape: CircleBorder(),
                     )),
               ],
             )
